@@ -1,0 +1,48 @@
+manini(1)
+=========
+:doctype: manpage
+
+
+NAME
+----
+manini - MANipulating INI files
+
+
+SYNOPSIS
+--------
+*manini* ['OPTIONS']
+
+
+DESCRIPTION
+-----------
+Manini is a small command line utilitly to get or set values from/to .ini
+files, intended to use in shell scripts.
+
+OPTIONS
+-------
+-f --file /path/to/inifile ::
+    Set the .ini file to work on. It can be empty, and if it's empty and the
+    MANINI_INIFILEPATH environment variable is set, that path will be used.
+
+-h ::
+    Print help text
+
+-v ::
+    Enable verbose mode. Add multiple times to make it more verbose. All
+    messages are printed to stderr, so processing the stdout output is safe, 
+    only the actual content is printed to there.
+
+CONFIGURATION
+-------------
+Currently the only external configuration point is the MANINI_INIFILEPATH
+variable, everything else is controlled via command line arguments.
+
+AUTHORS
+-------
+Zoltan Gyarmati <mr.zoltan.gyarmati@gmail.com>
+
+
+COPYING
+-------
+Copyright (c) 2016 Zoltan Gyarmati (http://zgyarmati.de)
+Apache 2

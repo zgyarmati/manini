@@ -25,6 +25,7 @@ AC_TYPE_SIZE_T
 AC_CHECK_FUNCS([strchr])
 
 AC_CONFIG_FILES([Makefile
+                 man/Makefile
                  src/Makefile
                  src/minIni/Makefile
                  src/minIni/dev/Makefile])
