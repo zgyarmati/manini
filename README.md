@@ -1,0 +1,4 @@
+manini
+===============
+
+MANipulating INI files
