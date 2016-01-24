@@ -1,1 +1,8 @@
 http://blog.brush.co.nz/2009/02/inih/
+
+
+http://courses.cms.caltech.edu/cs11/material/c/mike/misc/cmdline_args.html
+
+
+have INI file path/name exported as environment variable, so enough to set it at the
+beginning of the shell script (but command line argument has priority!)
