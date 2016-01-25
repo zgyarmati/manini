@@ -17,8 +17,6 @@ typedef enum {
     SET
 } opcode_t;
 
-
-
 void print_help(){
     fputs("HELP!\n", stderr);
 }
@@ -51,8 +49,6 @@ int main(int argc, char *argv[]) {
     int ret; //used for checking return values
     char str[INI_BUFFERSIZE];
     char *inifilename = NULL;
-    char *sectionname = NULL;
-    char *keyname = NULL;
     int opt;
     opcode_t opcode = NOP;
 
@@ -62,8 +58,6 @@ int main(int argc, char *argv[]) {
         {"file", 1, NULL, 'f'},
         {"set", 0, NULL, 's'},
         {"get", 0, NULL, 'g'},
-        {"section", 0, NULL, 'c'},
-        {"key", 0, NULL, 'k'},
         {0,0,0,0}
     };
 
@@ -80,6 +74,10 @@ int main(int argc, char *argv[]) {
             case 'v':
                 verbosity++;
                 break;
+            case 'f':
+                print_msg(2,"Got filename from command line: %s\n", inifilename);
+                inifilename = optarg;
+                break;
             case 's':
                 if (opcode) exit_error(-1, "Multiple operation argument, exiting\n");
                 opcode = SET;
@@ -87,18 +85,6 @@ int main(int argc, char *argv[]) {
             case 'g':
                 if (opcode) exit_error(-1, "Multiple operation argument, exiting\n");
                 opcode = GET;
-                break;
-            case 'f':
-                print_msg(2,"Got filename from command line: %s\n", inifilename);
-                inifilename = optarg;
-                break;
-            case 'c':
-                print_msg(2,"Got sectionname from command line: %s\n", inifilename);
-                sectionname = optarg;
-                break;
-            case 'k':
-                print_msg(2,"Got keyname from command line: %s\n", inifilename);
-                keyname = optarg;
                 break;
             case ':':
                 exit_error(-1,"option needs a value\n");
@@ -110,17 +96,39 @@ int main(int argc, char *argv[]) {
     }
     print_msg(1, "verbosity: %d\n", verbosity);
     print_msg(1, "Ini filename: %s\n", inifilename);
-    print_msg(1, "Ini sectionname: %s\n", sectionname);
-    print_msg(1, "Ini keyname: %s\n", keyname);
+    int i;
+    print_msg(1,"ARGC: %d, ARGC-OPTIND: %d\n", argc, argc -optind);
+    for (i = optind; i < argc; i++){
+            print_msg(1, "<<<<  POS argument <%d> %s\n", i, argv[i]);
+    }
+
+    // so we have this number of positional args after getopt is ready
+    int positional_argc = argc - optind;
+    print_msg(1, "SECTION: %s\n", argv[optind]);
+    print_msg(1, "KEY: %s\n", argv[optind+1]);
     switch(opcode){
         case GET:
-            ret = ini_gets("first", "string", "", str, sizearray(str), inifilename);
-            printf ("string value: %s\n", str);
+            if (positional_argc != 2 && positional_argc !=3 ){
+                print_msg(0,"Incorrect invocation, for getting a value, call:\n");
+                print_msg(0,"%s --get [--configfile test.ini] section key [default val]\n", argv[0]);
+                exit_error(-1, "Incorrect section/key arguments, exiting\n");
+            }
+            print_msg(1, "DEFVAL: %s\n", argv[optind+2]);
+            ret = ini_gets(argv[optind], argv[optind+1], argv[optind+2], str, sizearray(str), inifilename);
+            if(!ret){
+                exit_error(-2,"minIni error when trying to set value\n");
+            }
+            puts(str);
             break;
         case SET:
-            print_msg(0,"SET not implemented yet\n");
-            //ret = ini_gets("first", "string", "", str, sizearray(str), inifilename);
-            //printf ("string value: %s\n", str);
+            if (positional_argc !=3 ){
+                print_msg(0,"Incorrect invocation, for setting a value, call:\n");
+                print_msg(0,"%s --get [--configfile test.ini] section key value\n", argv[0]);
+                exit_error(-1, "Incorrect section/key arguments, exiting\n");
+            }
+            print_msg(1, "VALUE: %s\n", argv[optind+2]);
+            ret = ini_puts(argv[optind], argv[optind+1], argv[optind+2], inifilename);
+            puts(str);
             break;
     }
 
