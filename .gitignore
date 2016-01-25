@@ -24,3 +24,5 @@ src/manini
 src/minIni/dev/libminini.a
 *.pdf
 *.1
+*.tar.gz
+

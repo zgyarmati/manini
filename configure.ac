@@ -24,6 +24,14 @@ AC_TYPE_SIZE_T
 # Checks for library functions.
 AC_CHECK_FUNCS([strchr])
 
+
+#check for doc generating tools
+AC_CHECK_PROGS([A2X], [a2x])
+if test -z "$A2X";
+   then AC_MSG_WARN([asciidoc a2x not found - continuing without building man pages])
+fi
+AM_CONDITIONAL([HAVE_A2X], [test -n "$A2X"])
+
 AC_CONFIG_FILES([Makefile
                  man/Makefile
                  src/Makefile
