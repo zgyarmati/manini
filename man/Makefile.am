@@ -3,15 +3,17 @@ EXTRA_DIST = manini.asciidoc
 if HAVE_A2X
 dir = $(top_srcdir)/man
 
-man_MANS = $(dir)/manini.1
-$(dir)/manini.1: asciidoc.stamp
+man_MANS = manini.1
 
-asciidoc.stamp:
-	$(A2X) -f manpage $(dir)/manini.asciidoc -v -v
-	$(A2X) -fpdf $(dir)/manini.asciidoc -a revdate="`date`" -v -v
+manini.1:
+	$(A2X) -f manpage manini.asciidoc
 
-CLEANFILES = asciidoc.stamp
-all-local: asciidoc.stamp
+manini.pdf:
+	$(A2X) -f pdf manini.asciidoc -a revdate="`date`"
+
+CLEANFILES = manini.1 manini.pdf
+
+all-local: manini.pdf manini.1
 clean-local:
 	rm -rf $(dir)/manini.1
 	rm -rf manini.pdf
