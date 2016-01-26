@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2016 Zoltan Gyarmati (http://zgyarmati.de)
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
