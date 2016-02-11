@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT(manini, 0.1.0, mr.zoltan.gyarmati@gmail.com)
-AM_INIT_AUTOMAKE(manini, 0.1.0)
+AC_INIT(manini, 0.1.0~, mr.zoltan.gyarmati@gmail.com)
+AM_INIT_AUTOMAKE
 AC_PROG_RANLIB
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])

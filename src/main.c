@@ -9,6 +9,7 @@
 #include <stdarg.h>
 
 #include "minIni.h"
+#include "../config.h"
 
 
 #define sizearray(a)  (sizeof(a) / sizeof((a)[0]))
@@ -38,6 +39,9 @@ void print_msg(const int level, const char *fmt, ...){
     vfprintf(stderr,fmt, args);
 }
 
+void print_version(){
+    fputs(PACKAGE_STRING"\n", stderr);
+}
 
 /* prints the given error message, and exits the application
  * with the given error code
@@ -70,8 +74,11 @@ int main(int argc, char *argv[]) {
     inifilename = getenv("MANINI_INIFILEPATH");
     print_msg(2,"Read filename from environment: %s\n", inifilename);
 
-    while((opt = getopt_long(argc, argv, "hvf:sgck", longopts, NULL)) != -1) {
+    while((opt = getopt_long(argc, argv, "Vhvf:sgck", longopts, NULL)) != -1) {
         switch(opt) {
+            case 'V':
+                print_version();
+                break;
             case 'h':
                 print_help();
                 break;
