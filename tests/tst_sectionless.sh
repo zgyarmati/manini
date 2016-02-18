@@ -1,15 +1,19 @@
 #!/bin/sh
 export PATH=../src/:$PATH
 
-
-testInSectionWithComment()
+testGetValue()
 {
-    assertEquals 'noot' `manini -f ${TESTFILEPATH} -g First String`
+    assertEquals 'foobar' `manini -f ${TESTFILEPATH} -g '' value`
 }
 
-testInSectionWithoutComment()
+testGetValueWithWhiteSpace()
 {
-    assertEquals '1' `manini -f ${TESTFILEPATH} -g First Val`
+    assertEquals "example" `manini -f ${TESTFILEPATH} -g '' "key with whitespace"`
+}
+
+testGetKeyWithWhiteSpace()
+{
+    assertEquals "foobar barfoo" "`manini -f ${TESTFILEPATH} -g '' valuewithspace`"
 }
 
 oneTimeSetUp()
@@ -17,16 +21,10 @@ oneTimeSetUp()
     echo "manini version:  `manini -V 2>&1`"
     export TESTFILEPATH="${SHUNIT_TMPDIR}/test.ini"
     cat > ${TESTFILEPATH} << EOF
-    [First]
-    String=noot # trailing commment
-    Val=1
-
-    [Second]
-    Val = 2
-    #comment=3
-    String = mies
+    value = foobar
+    valuewithspace = foobar barfoo
+    key with whitespace = example
 EOF
-
 }
 
 oneTimeTearDown()
