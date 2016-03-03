@@ -72,7 +72,6 @@ int main(int argc, char *argv[]) {
     //first getting the filename value from the env, if there is a
     //file cmd line argument, it will overwrite the env value
     inifilename = getenv("MANINI_INIFILEPATH");
-    print_msg(2,"Read filename from environment: %s\n", inifilename);
 
     while((opt = getopt_long(argc, argv, "Vhvf:sgck", longopts, NULL)) != -1) {
         switch(opt) {
@@ -105,12 +104,16 @@ int main(int argc, char *argv[]) {
                 break;
         }
     }
-    print_msg(1, "verbosity: %d\n", verbosity);
+    print_msg(1, "Verbosity: %d\n", verbosity);
+    if (!inifilename){
+        exit_error(-1, "No ini file specified, you need to set the"
+                       "MANINI_INIFILEPATH envvar or use -f </path/to/file>\n");
+    }
     print_msg(1, "Ini filename: %s\n", inifilename);
     int i;
     print_msg(1,"ARGC: %d, ARGC-OPTIND: %d\n", argc, argc -optind);
     for (i = optind; i < argc; i++){
-            print_msg(1, "<<<<  POS argument <%d> %s\n", i, argv[i]);
+            print_msg(2, "<<<<  POS argument <%d> %s\n", i, argv[i]);
     }
 
     // so we have this number of positional args after getopt is ready

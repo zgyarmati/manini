@@ -15,7 +15,7 @@ Let your ini file be:
 
 '''
 echo "akey = avalue" > /tmp/test.ini
-[bsection]
+echo "[bsection]" >> /tmp/test.ini
 echo "bkey = bvalue" >> /tmp/test.ini
 '''
 
