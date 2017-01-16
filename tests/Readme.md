@@ -3,7 +3,7 @@ Here is a basic test suite for manini, using shunit2
 as test framework.
 
 For running the tests, you need to build (but not necessarly install)
-manini, and call 
+manini, and call
 '''
 ./run-tests.sh
 '''

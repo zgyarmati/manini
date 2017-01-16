@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
     }
     print_msg(1, "Verbosity: %d\n", verbosity);
     if (!inifilename){
-        exit_error(-1, "No ini file specified, you need to set the"
+        exit_error(-1, "No ini file specified, you need to set the "
                        "MANINI_INIFILEPATH envvar or use -f </path/to/file>\n");
     }
     print_msg(1, "Ini filename: %s\n", inifilename);

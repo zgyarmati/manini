@@ -15,7 +15,7 @@ SYNOPSIS
 
 DESCRIPTION
 -----------
-Manini is a small command line utilitly to get or set values from/to .ini
+Manini is a small command line utility to get or set values from/to .ini
 files, intended to use in shell scripts.
 
 OPTIONS

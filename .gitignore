@@ -26,4 +26,7 @@ src/minIni/dev/libminini.a
 *.1
 *.tar.gz
 sandbox
+build-stamp
+config.guess
+config.sub
 
