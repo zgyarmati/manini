@@ -13,7 +13,8 @@ manini.pdf:
 
 CLEANFILES = manini.1 manini.pdf
 
-all-local: manini.pdf manini.1
+all-local: manini.1
+#           manini.pdf
 clean-local:
 	rm -rf $(dir)/manini.1
 	rm -rf manini.pdf
