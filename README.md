@@ -5,7 +5,7 @@ MANipulating INI files
 
 Manini is a small command line utility to get or set values from/to .ini
 files, intended to use in shell scripts. It's based on (in fact: a thin wrapper around)
-the minIni library provided by CompuPhase, and which is bundled with this source tree. 
+the minIni library provided by CompuPhase, and which is bundled with this source tree.
 Consequently the only external dependency is a recent libc implementation, which suits
 well for using in embedded systems.
 

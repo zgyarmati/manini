@@ -16,7 +16,10 @@ SYNOPSIS
 DESCRIPTION
 -----------
 Manini is a small command line utility to get or set values from/to .ini
-files, intended to use in shell scripts.
+files, intended to use in shell scripts. It's based on (in fact: a thin wrapper around)
+the minIni library provided by CompuPhase, and which is bundled with this source tree.
+Consequently the only external dependency is a recent libc implementation, which suits
+well for using in embedded systems.
 
 OPTIONS
 -------
@@ -29,13 +32,67 @@ OPTIONS
 
 -v ::
     Enable verbose mode. Add multiple times to make it more verbose. All
-    messages are printed to stderr, so processing the stdout output is safe, 
-    only the actual content is printed to there.
+    messages are printed to stderr, so processing the stdout output is safe,
+    only the actually requested content is printed there.
+
+-s --set ::
+    Sets the given value for the section/key:
+    manini -f test.ini -s testsection testkey testvalue
+    This will set the testkey's value in the section [testsection]
+    and print the set value.
+    If the ini file doesn't contain sections, the sectionkey argument
+    can be omitted.
+
+-g --get ::
+    Gets the given value from the given section/key:
+    manini -f test.ini -f testsection testkey [defaultval]
+    This will read the testkey's value in the section [testsection]
+    and print it. If the key not found it will print the [defaultval]
+    If the ini file doesn't contain sections, the sectionkey argument
+    can be omitted.
+
+-V --version ::
+    Prints the version of manini
+
 
 CONFIGURATION
 -------------
 Currently the only external configuration point is the MANINI_INIFILEPATH
 variable, everything else is controlled via command line arguments.
+
+Examples
+--------
+
+Let your ini file be:
+
+    echo "akey = avalue" > /tmp/test.ini
+    echo "[bsection]" >> /tmp/test.ini
+    echo "bkey = bvalue" >> /tmp/test.ini
+
+
+and in your shell script:
+
+    #!/bin/sh
+
+    AKEY=`manini --get --file /tmp/test.ini akey`
+    BKEY=`manini --get --file /tmp/test.ini bsection bkey`
+    echo "A: $AKEY"
+    echo "B: $BKEY"
+
+
+or, if you work on only one ini file at a time, in your scripts, to save same
+typing just can just export the MANINI_INIFILEPATH environment variable, and forget
+about the --file argument:
+
+
+    #!/bin/sh
+
+    export MANINI_INIFILEPATH="/tmp/test.ini"
+
+    AKEY=`manini --get akey`
+    BKEY=`manini --get bsection bkey`
+    echo "A: $AKEY"
+    echo "B: $BKEY"
 
 AUTHORS
 -------
@@ -44,5 +101,5 @@ Zoltan Gyarmati <mr.zoltan.gyarmati@gmail.com>
 
 COPYING
 -------
-Copyright (c) 2016 Zoltan Gyarmati (http://zgyarmati.de)
-Apache 2
+Copyright (c) 2017 Zoltan Gyarmati (http://zgyarmati.de)
+Apache-2.0
