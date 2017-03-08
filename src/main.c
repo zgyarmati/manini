@@ -1,5 +1,17 @@
 /*
- * Copyright (c) 2016 Zoltan Gyarmati (http://zgyarmati.de)
+ * Copyright (c) 2017 Zoltan Gyarmati (http://zgyarmati.de)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 #include <stdio.h>
@@ -23,7 +35,35 @@ typedef enum {
 } opcode_t;
 
 void print_help(){
-    fputs("HELP!\n", stderr);
+    fputs("\n"
+        "manini [-f inifile] -s|-g section key (def)value\n"
+        "\n"
+        "-f --file /path/to/inifile\n"
+        "\t    Set the .ini file to work on. It can be empty, and if it's empty and the\n"
+        "\t    MANINI_INIFILEPATH environment variable is set, that path will be used.\n"
+        "\n"
+        "-h --help\n"
+        "\t    Print help text\n"
+        "\t\n"
+        "-v --verbose\n"
+        "\t    Enable verbose mode. Add multiple times to make it more verbose. All\n"
+        "\t    messages are printed to stderr, so processing the stdout output is safe,\n"
+        "\t    only the actually requested content is printed there.in"
+        "\t\n"
+        "-s --set \n"
+        "\t    Sets the given value for the section/key:\n"
+        "\t    manini -f test.ini -s testsection testkey testvalue\n"
+        "\t    This will set the testkey's value in the section [testsection]\n"
+        "\t    and print the set value.\n"
+        "\t\n"
+        "-g --get\n"
+        "\t    Gets the given value from the given section/key:\n"
+        "\t    manini -f test.ini -f testsection testkey [defaultval]\n"
+        "\t    This will read the testkey's value in the section [testsection]\n"
+        "\t    and print it. If the key not found it will print the [defaultval]\n"
+        "\t\n"
+        "-V --version ::\n"
+        "\t    Prints the version of manini\n", stderr);
 }
 
 /* prints the got message to the stderr, but only if the verbosity level
@@ -54,10 +94,11 @@ void exit_error(const int code, const char* fmt, ...){
 }
 
 int main(int argc, char *argv[]) {
-    int ret; //used for checking return values
-    char str[INI_BUFFERSIZE];
+    int ret; //used generally for checking return values
+    char str[INI_BUFFERSIZE]; //comes from minIni.h
     char *inifilename = NULL;
-    int opt;
+    int opt = 0;
+    int i = 0;
     opcode_t opcode = NOP;
 
     struct option longopts[] = {
@@ -66,6 +107,7 @@ int main(int argc, char *argv[]) {
         {"file", 1, NULL, 'f'},
         {"set", 0, NULL, 's'},
         {"get", 0, NULL, 'g'},
+        {"version", 0, NULL, 'V'},
         {0,0,0,0}
     };
 
@@ -77,6 +119,7 @@ int main(int argc, char *argv[]) {
         switch(opt) {
             case 'V':
                 print_version();
+                exit(0);
                 break;
             case 'h':
                 print_help();
@@ -110,10 +153,9 @@ int main(int argc, char *argv[]) {
                        "MANINI_INIFILEPATH envvar or use -f </path/to/file>\n");
     }
     print_msg(1, "Ini filename: %s\n", inifilename);
-    int i;
     print_msg(1,"ARGC: %d, ARGC-OPTIND: %d\n", argc, argc -optind);
     for (i = optind; i < argc; i++){
-            print_msg(2, "<<<<  POS argument <%d> %s\n", i, argv[i]);
+            print_msg(2, "\tPositional argument <%d> %s\n", i, argv[i]);
     }
 
     // so we have this number of positional args after getopt is ready
@@ -124,27 +166,29 @@ int main(int argc, char *argv[]) {
         case GET:
             if (positional_argc != 2 && positional_argc !=3 ){
                 print_msg(0,"Incorrect invocation, for getting a value, call:\n");
-                print_msg(0,"%s --get [--configfile test.ini] section key [default val]\n", argv[0]);
+                print_msg(0,"%s --get [--file test.ini] section key [default val]\n", argv[0]);
                 exit_error(-1, "Incorrect section/key arguments, exiting\n");
             }
             print_msg(1, "DEFVAL: %s\n", argv[optind+2]);
             ret = ini_gets(argv[optind], argv[optind+1], argv[optind+2], str, sizearray(str), inifilename);
             if(!ret){
-                exit_error(-2,"minIni error when trying to set value\n");
+                exit_error(-2,"minIni error when trying to get value\n");
             }
             puts(str);
             break;
         case SET:
             if (positional_argc !=3 ){
                 print_msg(0,"Incorrect invocation, for setting a value, call:\n");
-                print_msg(0,"%s --get [--configfile test.ini] section key value\n", argv[0]);
+                print_msg(0,"%s --set [--file test.ini] section key value\n", argv[0]);
                 exit_error(-1, "Incorrect section/key arguments, exiting\n");
             }
             print_msg(1, "VALUE: %s\n", argv[optind+2]);
             ret = ini_puts(argv[optind], argv[optind+1], argv[optind+2], inifilename);
-            puts(str);
+            puts(argv[optind+2]);
             break;
+        case NOP:
+        default:
+            exit_error(-1, "Please add a valid command to the invocation, see manual\n");
     }
-
     return 0;
 }
